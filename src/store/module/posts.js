@@ -18,11 +18,65 @@ export default {
                     return error;
                 })
         },
+        INCREASE_COUNT_CLAPS({commit}, id){
+            commit('SET_COUNT_CLAPS', id);
+        },
+        EDIT_POST({commit}, data){
+            return axios.patch(`http://localhost:3000/posts/${data.id}`, {
+                title: data.title,
+                description: data.description,
+                updateAt: data.updateAt
+            })
+                .then((data) => {
+                    return data;
+                })
+                .catch((error) => {
+                    return error;
+                })
+
+        },
+        DELETE_POST({commit}, id){
+            return axios.delete(`http://localhost:3000/posts/${id}`)
+                .then((id) => {
+                    commit('SET_DELETE_POST', id);
+                })
+                .catch((error) => {
+                    return error;
+                })
+        },
+        ADD_POST({commit}, data){
+            return axios.post(`http://localhost:3000/posts/`, {
+                id: data.id,
+                title: data.title,
+                description: data.description,
+                claps: data.claps,
+                createdAt: data.updateAt,
+                updateAt: data.updateAt,
+                userId: data.userId
+            })
+                .then((data) => {
+                    return data;
+                })
+                .catch((error) => {
+                    return error;
+                })
+        }
     },
     mutations: {
         SET_POSTS_TO_STATE: (state, posts) => {
             state.posts = posts;
-        }
+        },
+        SET_COUNT_CLAPS: (state, id) => {
+            let post = state.posts.find(post => post.id === id);
+            let count = ++post.claps;
+            return axios.patch(`http://localhost:3000/posts/${id}`, {
+                claps: count,
+            })
+        },
+        SET_DELETE_POST: (state, id) => {
+            let index = state.posts.findIndex(post => post.id === id);
+            state.posts.splice(index, 1)
+        },
     },
     getters: {
         POSTS(state){
