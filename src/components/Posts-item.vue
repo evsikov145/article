@@ -3,7 +3,7 @@
         <h2>{{post_data.title}}</h2>
         <p>{{post_data.description}}</p>
         <div class="posts-item__details">
-            <span class="posts__date">{{numberDaysAgo}} назад</span>
+            <span class="posts__date">{{str}} назад</span>
             <div class="posts-item__action">
                 <b-button
                         v-if="writer && currentUser"
@@ -75,6 +75,11 @@
                 }
             }
         },
+        data(){
+            return {
+                str: ''
+            }
+        },
         methods:{
             ...mapActions([
                 'DELETE_POST'
@@ -106,26 +111,28 @@
             },
             deletePost(){
                 this.DELETE_POST(this.post_data.id);
-            }
-        },
-        computed:{
-            ...mapGetters([
-                'POSTS'
-            ]),
+            },
             numberDaysAgo(){
                 let currentDate = Date.now();
                 let datePost = Date.parse(this.post_data.updateAt);
                 let mlInDay=1000*60*60*24;
-                let number = parseInt((currentDate - datePost)/mlInDay);
+                let number = Math.trunc((currentDate - datePost)/mlInDay);
                 let endWord = [
                     'день',
                     'дня',
                     'дней'
                 ];
                 let endWordAfterNumber = this.getNumEnding(number, endWord);
-                return `${number} ${endWordAfterNumber}`;
-            },
-
+                this.str = `${number} ${endWordAfterNumber}`;
+            }
+        },
+        computed:{
+            ...mapGetters([
+                'POSTS'
+            ]),
+        },
+        mounted() {
+            this.numberDaysAgo()
         }
     }
 </script>

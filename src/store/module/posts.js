@@ -27,7 +27,8 @@ export default {
                 description: data.description,
                 updateAt: data.updateAt
             })
-                .then((data) => {
+                .then((response) => {
+                    commit('SET_EDIT_POST', response.data);
                     return data;
                 })
                 .catch((error) => {
@@ -54,7 +55,8 @@ export default {
                 updateAt: data.updateAt,
                 userId: data.userId
             })
-                .then((data) => {
+                .then((response) => {
+                    commit('SET_ADD_POST', response.data);
                     return data;
                 })
                 .catch((error) => {
@@ -77,6 +79,24 @@ export default {
             let index = state.posts.findIndex(post => post.id === id);
             state.posts.splice(index, 1)
         },
+        SET_EDIT_POST: (state, data) => {
+            const currentPost = state.posts.find(item => item.id === data.id);
+            currentPost.title = data.title;
+            currentPost.description = data.description;
+            currentPost.updateAt = data.updateAt;
+        },
+        SET_ADD_POST: (state, data) => {
+            const newPost = {
+                id: data.id,
+                title: data.title,
+                description: data.description,
+                claps: data.claps,
+                createdAt: data.updateAt,
+                updateAt: data.updateAt,
+                userId: data.userId
+            };
+            state.posts.push(newPost);
+        }
     },
     getters: {
         POSTS(state){
